@@ -31,14 +31,18 @@ namespace Downloader.DownloadFiles
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFile = new SaveFileDialog();
-            var val = saveFile.ShowDialog().Value;
             using (var client = new WebClient())
             {
                 DownloadButton.IsEnabled = false;
-
                 try
                 {
                     var address = new Uri(UrlTextBox.Text);
+                    string fileName = System.IO.Path.GetFileName(address.LocalPath);
+                    string fileExtention = System.IO.Path.GetExtension(address.LocalPath);
+                    saveFile.FileName = fileName+fileExtention;
+                    saveFile.AddExtension = true;
+                    client.DownloadProgressChanged += Client_DownloadProgressChanged;
+                    var val = saveFile.ShowDialog().Value;
                     Task<String> downloadTask = client.DownloadStringTaskAsync(address);
                     string result = await downloadTask;
                     if (val)
@@ -67,6 +71,14 @@ namespace Downloader.DownloadFiles
                     DownloadButton.IsEnabled = true;
                 }
             }
+        }
+
+        private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            DownloadProgressBar.Visibility = Visibility.Visible;
+            DownloadProgressBar.Value = e.ProgressPercentage;
+            if (e.ProgressPercentage == 100)
+                DownloadProgressBar.Visibility = Visibility.Hidden;
         }
     }
 }
