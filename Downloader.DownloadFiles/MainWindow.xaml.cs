@@ -28,18 +28,21 @@ namespace Downloader.DownloadFiles
             InitializeComponent();
         }
 
+        bool cancelRequest = false;
+
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
+            Button button = sender as Button;
             SaveFileDialog saveFile = new SaveFileDialog();
             using (var client = new WebClient())
             {
-                DownloadButton.IsEnabled = false;
+                this.button.IsEnabled = false;
                 try
                 {
                     var address = new Uri(UrlTextBox.Text);
                     string fileName = System.IO.Path.GetFileName(address.LocalPath);
                     string fileExtention = System.IO.Path.GetExtension(address.LocalPath);
-                    saveFile.FileName = fileName+fileExtention;
+                    saveFile.FileName = fileName + fileExtention;
                     saveFile.AddExtension = true;
                     client.DownloadProgressChanged += Client_DownloadProgressChanged;
                     var val = saveFile.ShowDialog().Value;
@@ -68,17 +71,33 @@ namespace Downloader.DownloadFiles
                 }
                 finally
                 {
-                    DownloadButton.IsEnabled = true;
+                    this.button.IsEnabled = true;
                 }
             }
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            DownloadProgressBar.Visibility = Visibility.Visible;
-            DownloadProgressBar.Value = e.ProgressPercentage;
-            if (e.ProgressPercentage == 100)
-                DownloadProgressBar.Visibility = Visibility.Hidden;
+            if (cancelRequest == true)
+            {
+                WebClient client = sender as WebClient;
+                client.CancelAsync();
+                cancelRequest = false;
+
+            }
+            else
+            {
+                DownloadProgressBar.Visibility = Visibility.Visible;
+                DownloadProgressBar.Value = e.ProgressPercentage;
+                if (e.ProgressPercentage == 100)
+                    DownloadProgressBar.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            cancelRequest = true;
+            DownloadProgressBar.Visibility = Visibility.Hidden;
         }
     }
 }

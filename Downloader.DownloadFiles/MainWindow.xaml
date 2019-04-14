@@ -7,9 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button x:Name="DownloadButton" Content="Download" HorizontalAlignment="Left" Height="32" Margin="599,78,0,0" VerticalAlignment="Top" Width="113" Click="DownloadButton_Click"/>
+        <Button x:Name="button" Content="Download" HorizontalAlignment="Left" Height="32" Margin="554,78,0,0" VerticalAlignment="Top" Width="113" Click="DownloadButton_Click"/>
         <TextBox x:Name="UrlTextBox" HorizontalAlignment="Left" Height="32" Margin="47,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="492"/>
         <ProgressBar x:Name="DownloadProgressBar" HorizontalAlignment="Left" Height="32" Margin="47,78,0,0" VerticalAlignment="Top" Width="492" Visibility="Hidden"/>
+        <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="672,78,0,0" VerticalAlignment="Top" Width="113" Height="32" Click="CancelButton_Click"/>
 
     </Grid>
 </Window>
